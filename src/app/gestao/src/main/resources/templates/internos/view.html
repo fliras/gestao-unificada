@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head"></head>
+  <body>
+    <div th:insert="fragments/header :: ~{::body}"></div>
+
+    <h2>Detalhe Funcionário Interno</h2>
+
+    <dl class="row">
+      <dt class="col-sm-3">Matrícula</dt><dd class="col-sm-9" th:text="${interno.matricula}"></dd>
+      <dt class="col-sm-3">Nome</dt><dd class="col-sm-9" th:text="${interno.funcionario.nome}"></dd>
+      <dt class="col-sm-3">CPF</dt><dd class="col-sm-9" th:text="${interno.funcionario.cpf}"></dd>
+      <dt class="col-sm-3">Data Nascimento</dt><dd class="col-sm-9" th:text="${interno.dataNascimento}"></dd>
+    </dl>
+
+    <a href="/internos" class="btn btn-secondary">Voltar</a>
+
+    <div th:insert="fragments/footer :: ~{::body}"></div>
+  </body>
+</html>

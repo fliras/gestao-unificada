@@ -1,0 +1,6 @@
+package br.edu.cefsa.gestao.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import br.edu.cefsa.gestao.model.Funcionario;
+
+public interface FuncionarioRepository extends JpaRepository<Funcionario, String> {}
