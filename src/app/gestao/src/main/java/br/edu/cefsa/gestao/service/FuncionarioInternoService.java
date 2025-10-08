@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import br.edu.cefsa.gestao.model.*;
+import br.edu.cefsa.gestao.repository.ProjetoInternoFuncionarioRepository;
 
 @Service
 @Transactional
@@ -26,6 +27,7 @@ public class FuncionarioInternoService {
   private final CargoInternoRepository cargoInternoRepo;
   private final DepartamentoRepository departamentoRepo;
   private final ContratoInternoRepository contratoRepo;
+  private final ProjetoInternoFuncionarioRepository projetoFuncionarioRepo;
   private final BCryptPasswordEncoder encoder;
 
   public FuncionarioInternoService(UsuarioRepository usuarioRepo,
@@ -35,6 +37,7 @@ public class FuncionarioInternoService {
                                    CargoInternoRepository cargoInternoRepo,
                                    DepartamentoRepository departamentoRepo,
                                    ContratoInternoRepository contratoRepo,
+                                   ProjetoInternoFuncionarioRepository projetoFuncionarioRepo,
                                    BCryptPasswordEncoder encoder) {
     this.usuarioRepo = usuarioRepo;
     this.perfilRepo = perfilRepo;
@@ -43,6 +46,7 @@ public class FuncionarioInternoService {
     this.cargoInternoRepo = cargoInternoRepo;
     this.departamentoRepo = departamentoRepo;
     this.contratoRepo = contratoRepo;
+    this.projetoFuncionarioRepo = projetoFuncionarioRepo;
     this.encoder = encoder;
   }
 
@@ -82,18 +86,18 @@ public class FuncionarioInternoService {
   }
 
   public void excluir(String matricula) {
-    // delete contrato(s) -> interno -> funcionario -> usuario
     internoRepo.findById(matricula).ifPresent(interno -> {
       contratoRepo.findAll().stream()
         .filter(c -> c.getFuncionarioInterno().getMatricula().equals(matricula))
         .forEach(c -> contratoRepo.delete(c));
+      projetoFuncionarioRepo.findAll().stream()
+        .filter(pf -> pf.getFuncionarioInterno().getMatricula().equals(matricula))
+        .forEach(pf -> projetoFuncionarioRepo.delete(pf));
       internoRepo.delete(interno);
       Funcionario f = interno.getFuncionario();
       funcionarioRepo.delete(f);
       usuarioRepo.findById(f.getUsuario().getIdUsuario()).ifPresent(usuarioRepo::delete);
     });
   }
-
-  // editar ... (similar a criar, mas atualiza registros existentes)
 }
 
