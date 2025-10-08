@@ -81,6 +81,20 @@ public class FuncionarioInternoService {
     interno.setFuncionario(func);
     interno.setDataNascimento(form.getDataNascimento());
     interno = internoRepo.save(interno);
+    
+    ContratoInterno contratoInterno = new ContratoInterno();
+    contratoInterno.setDataInicio(form.getDataInicio());
+    contratoInterno.setDateFim(form.getDataFim());
+    
+    Departamento depto = departamentoRepo.findById(form.getIdDepartamento())
+            .orElseThrow(() -> new IllegalArgumentException("Perfil não encontrado"));
+    CargoInterno cargoInterno = cargoInternoRepo.findById(form.getIdCargoInterno())
+            .orElseThrow(() -> new IllegalArgumentException("Cargo interno não encontrado"));
+    
+    contratoInterno.setDepartamento(depto);
+    contratoInterno.setCargoInterno(cargoInterno);
+    contratoInterno.setFuncionarioInterno(interno);
+    contratoRepo.save(contratoInterno);
 
     return interno;
   }

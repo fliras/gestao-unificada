@@ -3,6 +3,7 @@ package br.edu.cefsa.gestao.controller;
 import br.edu.cefsa.gestao.dto.FuncionarioInternoForm;
 import br.edu.cefsa.gestao.dto.ProjetoInternoVinculoForm;
 import br.edu.cefsa.gestao.repository.CargoInternoRepository;
+import br.edu.cefsa.gestao.repository.ContratoInternoRepository;
 import br.edu.cefsa.gestao.repository.DepartamentoRepository;
 import br.edu.cefsa.gestao.repository.PerfilAcessoRepository;
 import br.edu.cefsa.gestao.repository.ProjetoInternoFuncionarioRepository;
@@ -28,6 +29,7 @@ public class FuncionarioInternoController {
   private final CargoInternoRepository cargoInternoRepo;
   private final DepartamentoRepository departamentoRepo;
   private final ProjetoInternoRepository projetosRepo;
+  private final ContratoInternoRepository contratoInternoRepo;
   private final ProjetoInternoFuncionarioRepository projetoFuncionarioRepo; 
 
   public FuncionarioInternoController(FuncionarioInternoService service,
@@ -35,12 +37,14 @@ public class FuncionarioInternoController {
                                       CargoInternoRepository cargoInternoRepo,
                                       DepartamentoRepository departamentoRepo,
                                       ProjetoInternoRepository projetosRepo,
+                                      ContratoInternoRepository contratoInternoRepo,
                                       ProjetoInternoFuncionarioRepository projetoFuncionarioRepo) {
     this.service = service;
     this.perfilRepo = perfilRepo;
     this.cargoInternoRepo = cargoInternoRepo;
     this.departamentoRepo = departamentoRepo;
     this.projetosRepo = projetosRepo;
+    this.contratoInternoRepo = contratoInternoRepo;
     this.projetoFuncionarioRepo = projetoFuncionarioRepo;
   }
 
@@ -93,9 +97,17 @@ public class FuncionarioInternoController {
 
   @GetMapping("/{matricula}")
   public String view(@PathVariable String matricula, Model model) {
-    var opt = service.buscarPorMatricula(matricula);
-    if (opt.isEmpty()) return "redirect:/internos";
-    model.addAttribute("interno", opt.get());
+    var interno = service.buscarPorMatricula(matricula);
+    var contratos = contratoInternoRepo.findAll();
+    if (!contratos.isEmpty()) {
+        model.addAttribute("cargoAtual", contratos.get(0).getCargoInterno().getCargo().getNome());
+        model.addAttribute("salarioAtual", contratos.get(0).getCargoInterno().getSalarioBase());
+        model.addAttribute("departamento", contratos.get(0).getDepartamento().getNome());
+    }
+    
+    if (interno.isEmpty()) return "redirect:/internos";
+    model.addAttribute("interno", interno.get());
+
     model.addAttribute("novoVinculo", new ProjetoInternoVinculoForm());
     model.addAttribute("todosProjetos", projetosRepo.findAll());
     model.addAttribute("projetosVinculados", projetoFuncionarioRepo.findByFuncionarioInternoMatricula(matricula));
