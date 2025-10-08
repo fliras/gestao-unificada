@@ -8,6 +8,50 @@ import java.time.LocalDate;
 
 public class FuncionarioInternoForm {
 
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public void setIdPerfilAcesso(Integer idPerfilAcesso) {
+        this.idPerfilAcesso = idPerfilAcesso;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public void setIdCargoInterno(Integer idCargoInterno) {
+        this.idCargoInterno = idCargoInterno;
+    }
+
+    public void setIdDepartamento(Integer idDepartamento) {
+        this.idDepartamento = idDepartamento;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
+    }
+
     public String getMatricula() {
         return matricula;
     }

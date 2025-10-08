@@ -1,9 +1,11 @@
 package br.edu.cefsa.gestao.controller;
 
 import br.edu.cefsa.gestao.dto.FuncionarioInternoForm;
+import br.edu.cefsa.gestao.dto.ProjetoInternoVinculoForm;
 import br.edu.cefsa.gestao.repository.CargoInternoRepository;
 import br.edu.cefsa.gestao.repository.DepartamentoRepository;
 import br.edu.cefsa.gestao.repository.PerfilAcessoRepository;
+import br.edu.cefsa.gestao.repository.ProjetoInternoRepository;
 import br.edu.cefsa.gestao.service.FuncionarioInternoService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -24,15 +26,18 @@ public class FuncionarioInternoController {
   private final PerfilAcessoRepository perfilRepo;
   private final CargoInternoRepository cargoInternoRepo;
   private final DepartamentoRepository departamentoRepo;
+  private final ProjetoInternoRepository projetosRepo;
 
   public FuncionarioInternoController(FuncionarioInternoService service,
                                       PerfilAcessoRepository perfilRepo,
                                       CargoInternoRepository cargoInternoRepo,
-                                      DepartamentoRepository departamentoRepo) {
+                                      DepartamentoRepository departamentoRepo,
+                                      ProjetoInternoRepository projetosRepo) {
     this.service = service;
     this.perfilRepo = perfilRepo;
     this.cargoInternoRepo = cargoInternoRepo;
     this.departamentoRepo = departamentoRepo;
+    this.projetosRepo = projetosRepo;
   }
 
   @GetMapping
@@ -54,6 +59,8 @@ public class FuncionarioInternoController {
   public String salvar(@Valid @ModelAttribute("form") FuncionarioInternoForm form,
                        BindingResult br, Model model, RedirectAttributes ra) {
     if (br.hasErrors()) {
+      System.out.println("errado??");
+      br.getAllErrors().forEach(e -> System.out.println("Erro: " + e));
       model.addAttribute("perfis", perfilRepo.findAll());
       model.addAttribute("cargosInternos", cargoInternoRepo.findAll());
       model.addAttribute("departamentos", departamentoRepo.findAll());
@@ -64,7 +71,7 @@ public class FuncionarioInternoController {
       ra.addFlashAttribute("success", "Funcionário interno criado com sucesso");
       return "redirect:/internos";
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      System.out.println("QUEIMA???? " + e.toString());
       br.reject("error.global", e.getMessage());
       model.addAttribute("perfis", perfilRepo.findAll());
       model.addAttribute("cargosInternos", cargoInternoRepo.findAll());
@@ -85,6 +92,8 @@ public class FuncionarioInternoController {
     var opt = service.buscarPorMatricula(matricula);
     if (opt.isEmpty()) return "redirect:/internos";
     model.addAttribute("interno", opt.get());
+    model.addAttribute("novoVinculo", new ProjetoInternoVinculoForm());
+    model.addAttribute("todosProjetos", projetosRepo.findAll());
     return "internos/view";
   }
 }

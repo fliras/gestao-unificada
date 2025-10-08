@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.edu.cefsa.gestao.service;
 
 import br.edu.cefsa.gestao.dto.FuncionarioInternoForm;
@@ -66,7 +62,6 @@ public class FuncionarioInternoService {
     usuario.setEmail(form.getEmail());
     usuario.setHashSenha(encoder.encode(form.getSenha()));
     usuario.setPerfilAcesso(perfil);
-    System.out.println("tendeu veinho?");
     usuario = usuarioRepo.save(usuario);
 
     // 2) criar Funcionario
@@ -80,23 +75,8 @@ public class FuncionarioInternoService {
     // 3) criar FuncionarioInterno
     FuncionarioInterno interno = new FuncionarioInterno();
     interno.setFuncionario(func);
-    interno.setMatricula(func.getMatricula());
     interno.setDataNascimento(form.getDataNascimento());
     interno = internoRepo.save(interno);
-
-    // 4) criar ContratoInterno
-    CargoInterno cargoInt = cargoInternoRepo.findById(form.getIdCargoInterno())
-        .orElseThrow(() -> new IllegalArgumentException("Cargo interno não encontrado"));
-    Departamento dept = departamentoRepo.findById(form.getIdDepartamento())
-        .orElseThrow(() -> new IllegalArgumentException("Departamento não encontrado"));
-
-    ContratoInterno contrato = new ContratoInterno();
-    contrato.setFuncionarioInterno(interno);
-    contrato.setCargoInterno(cargoInt);
-    contrato.setDepartamento(dept);
-    contrato.setDataInicio(form.getDataInicio());
-    contrato.setDateFim(form.getDataFim());
-    contratoRepo.save(contrato);
 
     return interno;
   }
