@@ -5,6 +5,7 @@ import br.edu.cefsa.gestao.dto.ProjetoInternoVinculoForm;
 import br.edu.cefsa.gestao.repository.CargoInternoRepository;
 import br.edu.cefsa.gestao.repository.DepartamentoRepository;
 import br.edu.cefsa.gestao.repository.PerfilAcessoRepository;
+import br.edu.cefsa.gestao.repository.ProjetoInternoFuncionarioRepository;
 import br.edu.cefsa.gestao.repository.ProjetoInternoRepository;
 import br.edu.cefsa.gestao.service.FuncionarioInternoService;
 import jakarta.validation.Valid;
@@ -27,17 +28,20 @@ public class FuncionarioInternoController {
   private final CargoInternoRepository cargoInternoRepo;
   private final DepartamentoRepository departamentoRepo;
   private final ProjetoInternoRepository projetosRepo;
+  private final ProjetoInternoFuncionarioRepository projetoFuncionarioRepo; 
 
   public FuncionarioInternoController(FuncionarioInternoService service,
                                       PerfilAcessoRepository perfilRepo,
                                       CargoInternoRepository cargoInternoRepo,
                                       DepartamentoRepository departamentoRepo,
-                                      ProjetoInternoRepository projetosRepo) {
+                                      ProjetoInternoRepository projetosRepo,
+                                      ProjetoInternoFuncionarioRepository projetoFuncionarioRepo) {
     this.service = service;
     this.perfilRepo = perfilRepo;
     this.cargoInternoRepo = cargoInternoRepo;
     this.departamentoRepo = departamentoRepo;
     this.projetosRepo = projetosRepo;
+    this.projetoFuncionarioRepo = projetoFuncionarioRepo;
   }
 
   @GetMapping
@@ -94,6 +98,7 @@ public class FuncionarioInternoController {
     model.addAttribute("interno", opt.get());
     model.addAttribute("novoVinculo", new ProjetoInternoVinculoForm());
     model.addAttribute("todosProjetos", projetosRepo.findAll());
+    model.addAttribute("projetosVinculados", projetoFuncionarioRepo.findByFuncionarioInternoMatricula(matricula));
     return "internos/view";
   }
 }
